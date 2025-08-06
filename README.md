@@ -2,7 +2,7 @@
 
 This repository is intended for users who are testing their connectivity and interaction with the ClearBank API and webhooks.
 
-It contains an example .NET 6 application that demonstrates how to make a call to the ClearBank API and how to receive, validate and respond to webhooks.
+It contains an example .NET 8 application that demonstrates how to make a call to the ClearBank API and how to receive, validate and respond to webhooks.
 
 Please note that the code in this repository is not production ready and has been simplified for brevity.
 
@@ -19,7 +19,7 @@ It does payload signing for API calls and signature verification for webhooks
 
 To be able to run the application and receive webhooks, you will need:
 
-- [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [ngrok](https://ngrok.com/) We have used version 2.3.35
 
 ## Set up on the ClearBank Portal
