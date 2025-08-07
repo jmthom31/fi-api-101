@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebhooksReceiver.Models;
 
@@ -17,19 +18,9 @@ public class SampleController : ControllerBase
 {
     private readonly AuthProfile _authProfile;
 
-    public SampleController()
+    public SampleController(AuthProfile authProfile)
     {
-        _authProfile = new AuthProfile
-        {
-            ApiUrl = @"https://institution-api-sim.clearbank.co.uk",
-            ApiToken = @"",
-            ClientPrivateKey = @"-----BEGIN RSA PRIVATE KEY-----
-
------END RSA PRIVATE KEY-----",
-            ClearBankPublicKey = @"-----BEGIN PUBLIC KEY-----
-
------END PUBLIC KEY-----"
-        };
+        _authProfile = authProfile;
     }
 
     [HttpPost]
@@ -39,21 +30,21 @@ public class SampleController : ControllerBase
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, "v1/test");
         requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _authProfile.ApiToken);
 
-        // It is important to sign exactly same payload that is going to be send in the http request
-        // Conversion from object to JSON in different places may result in different strings and request will fail digital signature validation
+        // It is important to sign exactly the same payload that is going to be sent in the http request.
+        // Conversion from am object to JSON in different places may result in different strings and the request will fail digital signature validation.
         var requestAsString = JsonSerializer.Serialize(request);
         requestMessage.Content = new StringContent(requestAsString, Encoding.UTF8, "application/json");
         requestMessage.Headers.Add("DigitalSignature", DigitalSignature.Generate(requestAsString, _authProfile.ClientPrivateKey));
 
-        // X-Request-Id - unique string that identifies the request. Do not reuse the same in 24 hour period.
-        // If your request result in server error, use the same X-Request-Id for retries
+        // X-Request-Id - a unique string that identifies the request. Do not reuse in a 24 hour period.
+        // If your request results in a server error, use the same X-Request-Id for retries.
         requestMessage.Headers.Add("X-Request-Id", Guid.NewGuid().ToString("N"));
 
         using var client = new HttpClient { BaseAddress = new Uri(_authProfile.ApiUrl) };
         var response = await client.SendAsync(requestMessage);
 
-        // You should save X-Correlation-Id for future reference
-        // If you have any questions about your request our support will ask you to provide X-Request-Id and X-Correlation-Id
+        // X-Correlation-Id should be saved for future reference.
+        // If you have any questions about your request, our support team will ask you to provide X-Request-Id and X-Correlation-Id.
         response.Headers.TryGetValues("X-Correlation-Id", out var headers);
         var correlationId = headers?.First();
         var body = await response.Content.ReadAsStringAsync();
@@ -67,8 +58,8 @@ public class SampleController : ControllerBase
     {
         Console.WriteLine($"Received webhook: {webhookRequest.Type}, payload: {webhookRequest.Payload}");
 
-        // It is important to get body from request object to calculate hash
-        // Conversion back from WebhookRequest object may result in different string that will fail validation
+        // It is important to get the body from the request object to calculate the hash.
+        // Conversion back from the WebhookRequest object may result in a different string which will fail validation.
         Request.Body.Position = 0;
         using var reader = new StreamReader(Request.Body);
         var body = reader.ReadToEnd();
@@ -80,15 +71,15 @@ public class SampleController : ControllerBase
             return BadRequest("Incorrect signature");
         }
 
-        // In production system you should put that webhook into the internal queue for processing 
-        // Don't do heavy processing here and respond to webhook as quick as possible
+        // In the production system, the webhook should be placed into the internal queue for processing.
+        // The webhook should be responded to as quickly as possible and any heavy processing should be avoided.
 
         var result = new WebhookResponse { Nonce = webhookRequest.Nonce };
 
         var response = JsonSerializer.Serialize(result);
         var signature = DigitalSignature.Generate(response, _authProfile.ClientPrivateKey);
 
-        Request.HttpContext.Response.Headers.Add("DigitalSignature", signature);
+        Request.HttpContext.Response.Headers.Append("DigitalSignature", signature);
 
         return Content(response);
     }
