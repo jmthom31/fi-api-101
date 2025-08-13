@@ -66,4 +66,4 @@ Received webhook: test.webhook, payload: {"FieldName":"test"}
 
 ## Demo
 
-![demo](/Media/api-101.gif)
+![demo](/Media/fi-api-101.gif)
