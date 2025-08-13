@@ -31,7 +31,7 @@ public static class ApiTestEndpoint
         // Conversion from an object to JSON in different places may result in different strings and the request will fail digital signature validation.
         var requestAsString = JsonSerializer.Serialize(request);
         requestMessage.Content = new StringContent(requestAsString, Encoding.UTF8, "application/json");
-        requestMessage.Headers.Add("DigitalSignature", DigitalSignature.Generate(requestAsString, authProfile.ClientPrivateKey));
+        requestMessage.Headers.Add("DigitalSignature", DigitalSignature.Generate(requestAsString, authProfile.PrivateKey));
 
         // X-Request-Id - a unique string that identifies the request. Do not reuse in a 24 hour period.
         // If your request results in a server error, use the same X-Request-Id for retries.

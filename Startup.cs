@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using WebhooksReceiver.Endpoints;
 
 namespace WebhooksReceiver;
@@ -25,13 +24,12 @@ public class Startup
 
         services.AddSingleton<AuthProfile>(provider => new AuthProfile
         {
-            //ApiUrl = @"https://institution-api-sim.clearbank.co.uk",
-            ApiUrl = @"https://testnarwhal-institution-api-uksouth.test-cbinnovation.uk",
+            ApiUrl = @"https://institution-api-sim.clearbank.co.uk",
             ApiToken = @"",
-            ClientPrivateKey = @"-----BEGIN PRIVATE KEY-----
+            PrivateKey = @"-----BEGIN PRIVATE KEY-----
 
 -----END PRIVATE KEY-----",
-            ClearBankPublicKey = @"-----BEGIN PUBLIC KEY-----
+            PublicKey = @"-----BEGIN PUBLIC KEY-----
 
 -----END PUBLIC KEY-----"
         });
@@ -56,7 +54,6 @@ public class Startup
 
         app.UseEndpoints(endpoints =>
         {
-            //endpoints.MapControllers();
             endpoints.MapWebhookTriggerEndpoints();
             endpoints.MapApiTestEndpoints();
             endpoints.MapWebhooksReceiverEndpoints();

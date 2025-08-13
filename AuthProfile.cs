@@ -6,7 +6,7 @@ public class AuthProfile
 
     public string ApiToken { get; set; }
 
-    public string ClientPrivateKey { get; set; }
+    public string PrivateKey { get; set; }
 
-    public string ClearBankPublicKey { get; set; }
+    public string PublicKey { get; set; }
 }

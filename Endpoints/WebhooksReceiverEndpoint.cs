@@ -31,7 +31,7 @@ public static class WebhooksReceiverEndpoint
         using var reader = new StreamReader(context.Request.Body);
         var body = await reader.ReadToEndAsync();
 
-        var verified = DigitalSignature.Verify(digitalSignature, body, authProfile.ClearBankPublicKey);
+        var verified = DigitalSignature.Verify(digitalSignature, body, authProfile.PublicKey);
 
         if (!verified)
         {
@@ -44,7 +44,7 @@ public static class WebhooksReceiverEndpoint
         var result = new WebhookResponse { Nonce = webhookRequest.Nonce };
 
         var response = JsonSerializer.Serialize(result);
-        var signature = DigitalSignature.Generate(response, authProfile.ClientPrivateKey);
+        var signature = DigitalSignature.Generate(response, authProfile.PrivateKey);
 
         context.Response.Headers.Append("DigitalSignature", signature);
 

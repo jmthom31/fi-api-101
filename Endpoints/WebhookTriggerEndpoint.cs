@@ -1,16 +1,14 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using WebhooksReceiver.Models;
 
 namespace WebhooksReceiver.Endpoints;
 
+// This endpoint simulates sending a webhook to the listener. In production, this would be triggered by an event in your system.
 public static class WebhookTriggerEndpoint
 {
     public static void MapWebhookTriggerEndpoints(this IEndpointRouteBuilder endpoints)
@@ -18,7 +16,7 @@ public static class WebhookTriggerEndpoint
         endpoints.MapPost("/webhooktrigger/trigger", TriggerWebhook);           
     }
 
-    private static async Task<IResult> TriggerWebhook(
+    private static async void TriggerWebhook(
         [FromBody] ApiRequest request, 
         AuthProfile authProfile)
     {
@@ -37,18 +35,9 @@ public static class WebhookTriggerEndpoint
         // Create HTTP request to send webhook
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, webhookListenerUrl);
         requestMessage.Content = new StringContent(webhookPayload, Encoding.UTF8, "application/json");
-        requestMessage.Headers.Add("DigitalSignature", DigitalSignature.Generate(webhookPayload, authProfile.ClientPrivateKey));
+        requestMessage.Headers.Add("DigitalSignature", DigitalSignature.Generate(webhookPayload, authProfile.PrivateKey));       
 
-        try
-        {
-            using var client = new HttpClient();
-            await client.SendAsync(requestMessage);
-
-            return Results.Ok("Webhook sent successfully");
-        }
-        catch (Exception)
-        {
-            return Results.BadRequest("Failed to send webhook");
-        }
+        using var client = new HttpClient();
+        await client.SendAsync(requestMessage);
     }
 }
