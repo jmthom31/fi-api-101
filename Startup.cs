@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-//using WebhooksReceiver.Endpoints;
+using WebhooksReceiver.Endpoints;
 
 namespace WebhooksReceiver;
 
@@ -25,19 +25,14 @@ public class Startup
 
         services.AddSingleton<AuthProfile>(provider => new AuthProfile
         {
-            ApiUrl = @"https://institution-api-sim.clearbank.co.uk",
+            //ApiUrl = @"https://institution-api-sim.clearbank.co.uk",
+            ApiUrl = @"https://testnarwhal-institution-api-uksouth.test-cbinnovation.uk",
             ApiToken = @"",
             ClientPrivateKey = @"-----BEGIN PRIVATE KEY-----
 
 -----END PRIVATE KEY-----",
             ClearBankPublicKey = @"-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhNgYwqIJYvV5tmouMTHS
-ThZI6lNSANvCs9Pr7n2SuSpEbqkkn1P8RXxHxdhEfiP95CC0WdO6HfDJEPr3wj1s
-dlVcpH9EC3/JJ/4s556jAmZpo2L5hQPDTOvu6figuvZMe0HaxbX5kOjrI7EX2rW4
-D7eLplcxzMoV6/O3GMHBTX4qgBBe+9Kxup9Ns191Xir21cnM6tb8/j6CuN0pEqru
-tyUOruCZCCWOxmMutN6g0C2fPuyii/N2bb2yNUp+A3/Tt26RMCTfYu73RESkxBci
-ORqIaLDZf5fwX7jhJojzSdlqSOBv+3OtmHEG77bHpnfti83LC+xQrEGe4MMZ85V5
-wwIDAQAB
+
 -----END PUBLIC KEY-----"
         });
     }
@@ -61,10 +56,10 @@ wwIDAQAB
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapControllers();
-            //endpoints.MapWebhookTriggerEndpoints();
-            //endpoints.MapApiTestEndpoints();
-            //endpoints.MapWebhooksReceiverEndpoints();
+            //endpoints.MapControllers();
+            endpoints.MapWebhookTriggerEndpoints();
+            endpoints.MapApiTestEndpoints();
+            endpoints.MapWebhooksReceiverEndpoints();
         });
     }
 }
