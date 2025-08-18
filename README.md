@@ -55,7 +55,7 @@ You will recieve the request body and the correlation ID as a response.
 To test webhooks functionality, you can use the webhook trigger endpoint to simulate sending a simplified webhook to the webhooks reciever endpoint:
 
 ```cmd
-curl.exe --location --request POST "http://localhost:5000/webhooktrigger/trigger"
+ curl.exe --location --request POST "http://localhost:5000/webhooktrigger/trigger" --header "Content-Type: application/json" --data-binary "@test.json"
 ```
 
 This will simulate sending a webhook to the `/sample/webhook` endpoint and you will see the following output in the console:
