@@ -26,7 +26,7 @@ public static class WebhookTriggerEndpoint
         var webhookRequest = new WebhookRequest
         {
             Type = "test.webhook",
-            Payload = new { FieldName = "test" },
+            Payload = new { request.FieldName}
         };
 
         // Serialize the webhook payload to JSON

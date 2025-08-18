@@ -42,13 +42,13 @@ Application starts listening on port 5000.
 
 ## Testing the API endpoint
 
-You can test the API endpoint by running the following command:
+You can test the API endpoint by running the following command, which will use the contents of the `test.json` file as the body of the request:
 
 ```cmd
 curl.exe --location --request POST "http://localhost:5000/sample/api" --header "Content-Type: application/json" --data-binary "@test.json"
 ```
 
-You should recieve the request body and the correlation ID as a response.
+You will recieve the request body and the correlation ID as a response.
 
 ## Testing the webhooks endpoint
 
@@ -58,7 +58,7 @@ To test webhooks functionality, you can use the webhook trigger endpoint to simu
 curl.exe --location --request POST "http://localhost:5000/webhooktrigger/trigger"
 ```
 
-This will simulate sending a webhook to the `/sample/webhook` endpoint and you should see the following output in the console:
+This will simulate sending a webhook to the `/sample/webhook` endpoint and you will see the following output in the console:
 
 ```cmd
 Received webhook: test.webhook, payload: {"FieldName":"test"}
