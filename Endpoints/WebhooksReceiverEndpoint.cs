@@ -41,7 +41,7 @@ public static class WebhooksReceiverEndpoint
         // In the production system, the webhook should be placed into the internal queue for processing.
         // The webhook should be responded to as quickly as possible and any heavy processing should be avoided.
 
-        var result = new WebhookResponse { Nonce = webhookRequest.Nonce };
+        var result = new WebhookResponse(Nonce: webhookRequest.Nonce);
 
         var response = JsonSerializer.Serialize(result);
         var signature = DigitalSignature.Generate(response, authProfile.PrivateKey);

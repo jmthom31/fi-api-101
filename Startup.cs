@@ -8,21 +8,16 @@ using WebhooksReceiver.Endpoints;
 
 namespace WebhooksReceiver;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
-    public Startup(IConfiguration configuration)
-    {
-        Configuration = configuration;
-    }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
 
-        services.AddSingleton<AuthProfile>(provider => new AuthProfile
+        services.AddSingleton(provider => new AuthProfile
         {
             ApiUrl = @"https://institution-api-sim.clearbank.co.uk",
             ApiToken = @"",
